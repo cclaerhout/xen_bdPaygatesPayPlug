@@ -1,0 +1,1 @@
+This XenForo extension requires [bd] Paygates: https://xenforo.com/community/resources/bd-paygates.1606/

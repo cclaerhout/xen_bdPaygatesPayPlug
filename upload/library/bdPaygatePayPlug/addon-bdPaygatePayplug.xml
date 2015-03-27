@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="bdPaygatePayplug" title="[bd] Paygates: PAYPLUG" version_string="1.0.0" version_id="1" url="" install_callback_class="bdPaygatePayPlug_Installer" install_callback_method="install" uninstall_callback_class="bdPaygatePayPlug_Installer" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="option_bdPaygatePayPlug_generator"><![CDATA[<xen:require css="option_bdPaygatePayPlug_generator.css" />
+
+<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<xen:if is="{$optionParsed}">
+			<div class="secondaryContent parsedOptions">
+				<h1 class="textHeading">{xen:phrase bdPaygatePayPlug_config_information}</h1>
+				<ul>
+					<li>{xen:phrase date}: {xen:datetime $payPlugConfig.XenData.timeStamp}</li>
+					<li>{xen:phrase bdPaygatePayPlug_config_test}: {xen:if '{$payPlugConfig.XenData.isTest}', '<b>{xen:phrase yes}</b>', '{xen:phrase no}'}</li>
+					<xen:if is="{$payPlugConfig.minAmount} AND {$payPlugConfig.maxAmount}">
+						<li>
+							<p>{xen:phrase bdPaygatePayPlug_config_minmax_amount_allowed}: <b>{$payPlugConfig.minAmount}</b>-<b>{$payPlugConfig.maxAmount}</b></p>
+						</li>
+					</xen:if>
+					<xen:if is="{$payPlugConfig.currencies}">
+						<li>
+							<p>{xen:phrase bdPaygatePayPlug_config_supported_currencies}:</p>
+							<ul class="currencies_list">
+								<xen:foreach loop="$payPlugConfig.currencies" value="$currency">
+									<li>{$currency}</li>
+								</xen:foreach>
+							</ul>
+						</li>
+					</xen:if>
+					<xen:if is="{$xenOptions.bdPaygatePayPlug_config_display_keys}">
+						<xen:if is="{$keys.public}">
+							<li>
+								<p>{xen:phrase bdPaygatePayPlug_config_key_public}:</p>
+								<textarea readonly>{$keys.public}</textarea>
+							</li>
+						</xen:if>
+						<xen:if is="{$keys.private}">
+							<li>
+								<p>{xen:phrase bdPaygatePayPlug_config_key_private}:</p>
+								<textarea readonly>{$keys.private}</textarea>
+							</li>
+						</xen:if>
+					</xen:if>
+				</ul>
+			</div>
+			<div class="section">
+				<label>{xen:phrase bdPaygatePayPlug_config_raz_label}</label>
+				<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][raz]" />
+			</div>
+		<xen:else />
+			<dl class="ctrlUnit">
+				<dt><label>{xen:phrase bdPaygatePayPlug_config_identification}</label></dt>
+				<dd><xen:textbox 
+					name="{$fieldPrefix}[{$preparedOption.option_id}][login]"
+					value="{$preparedOption.option_value.login}"
+					placeholder="{xen:phrase bdPaygatePayPlug_config_login}" 
+					size="20"
+				/> : 
+				<xen:password
+					name="{$fieldPrefix}[{$preparedOption.option_id}][password]"
+					placeholder="{xen:phrase bdPaygatePayPlug_config_password}" 
+					size="20"
+					class="NoAutoValidate"
+				/>			
+				</dd>
+				<dt>{xen:phrase bdPaygatePayPlug_config_test}</dt>
+				<dd>
+					<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][isTest]" {xen:if '{$preparedOption.option_value.isTest}', 'checked'} />
+					<span class="explain">{xen:phrase bdPaygatePayPlug_config_test_explain}</span>
+				</dd>
+			</dl>
+		</xen:if>
+
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
+    <template title="option_bdPaygatePayPlug_generator.css"><![CDATA[.parsedOptions textarea{
+	width: 95%;
+	height: 120px;
+	margin: 7px;
+	resize: none;
+}
+
+.parsedOptions .currencies_list li{
+	list-style: circle inside none;
+	padding-left: 15px;
+	font-weight: bold;
+}]]></template>
+    <template title="option_bdPaygatePayPlug_information"><![CDATA[<xen:require css="option_bdPaygatePayPlug_information.css" />
+
+<xen:controlunit label="" hint="{$preparedOption.hint}">
+	<xen:html>
+		<div class="section payplug">
+			<h2 class="subHeading">{$preparedOption.title}</h2>
+			<div class="primaryContent explain">{xen:raw $preparedOption.explain}</div>
+		</div>
+		
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
+    <template title="option_bdPaygatePayPlug_information.css"><![CDATA[.section.payplug li{
+	list-style: square inside;
+}]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="file_health_check" execute_order="10" callback_class="bdPaygatePayPlug_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="bdPaygatePayPlug_Listener" callback_method="load_class" active="1" hint="" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="bdPaygatePayPlug_Listener" callback_method="load_class" active="1" hint="" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="bdPaygatePayPlug" display_order="9999" debug_only="0"/>
+    <option option_id="bdPaygatePayPlug_config" edit_format="callback" data_type="array" can_backup="1" validation_class="bdPaygatePayPlug_Listener" validation_method="option_config_validation">
+      <default_value></default_value>
+      <edit_format_params>bdPaygatePayPlug_Listener::option_config_generator</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="bdPaygatePayPlug" display_order="10"/>
+    </option>
+    <option option_id="bdPaygatePayPlug_config_display_keys" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdPaygatePayPlug" display_order="90"/>
+    </option>
+    <option option_id="bdPaygatePayPlug_config_info" edit_format="template" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>option_bdPaygatePayPlug_information</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdPaygatePayPlug" display_order="99"/>
+    </option>
+    <option option_id="bdPaygatePayPlug_disable_curl_ssl_vp" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdPaygatePayPlug" display_order="1000"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="bdpaygatePayPlug_call_to_action" version_id="0" version_string="1.0.0"><![CDATA[Pay with PayPlug]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_identification" version_id="0" version_string="1.0.0"><![CDATA[PayPlug Identification]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_information" version_id="0" version_string="1.0.0"><![CDATA[PayPlug Generated Config Information]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_key_private" version_id="0" version_string="1.0.0"><![CDATA[Your private key]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_key_public" version_id="0" version_string="1.0.0"><![CDATA[Your public key]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_login" version_id="0" version_string="1.0.0"><![CDATA[Login]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_minmax_amount_allowed" version_id="0" version_string="1.0.0"><![CDATA[Minimum and maximum amount allowed]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_password" version_id="0" version_string="1.0.0"><![CDATA[Password]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_raz_label" version_id="0" version_string="1.0.0"><![CDATA[Reset config]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_supported_currencies" version_id="0" version_string="1.0.0"><![CDATA[Supported currencies]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_test" version_id="0" version_string="1.0.0"><![CDATA[Test Mode]]></phrase>
+    <phrase title="bdPaygatePayPlug_config_test_explain" version_id="0" version_string="1.0.0"><![CDATA[Check this if you want to do false transactions for test purpose]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_config" version_id="0" version_string="1.0.0"><![CDATA[PayPlug config generator]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_config_display_keys" version_id="0" version_string="1.0.0"><![CDATA[Display config public and private keys]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_config_display_keys_explain" version_id="0" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_config_explain" version_id="0" version_string="1.0.0"><![CDATA[PayPplug needs your PayPlug login and password to generate a few data: private/public keys, currency unit, min/max amount, etc. Your login and password will be send by SSL to their server to automatically get those data. Those data will be put in the XenForo cache, but your login and password will NOT be saved anywhere, nor be used anymore. You can generate those data when you want, just reset them first.]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_config_info" version_id="1" version_string="1.0.0"><![CDATA[PayPlug information]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_config_info_explain" version_id="1" version_string="1.0.0"><![CDATA[<b>Instructions to follow to avoid any problems with PayPlug IPN:</b>
+<ul>
+<li>If you're using SSL, do not forget to install intermediate certificates. Click <a href="https://www.sslshopper.com/ssl-checker.html" target="_blank">here</a> to check your ssl installation.</li>
+<li>If you're using redirection in your htaccess file to display or hide the prefix "www.", be sure your board url in the XenForo option keeps the same logic : if you do no want the prefix "www.", do not add it in your board url.</li>
+</ul>]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_disable_curl_ssl_vp" version_id="0" version_string="1.0.0"><![CDATA[[DEBUG] Disable "CURLOPT_SSL_VERIFYPEER"]]></phrase>
+    <phrase title="option_bdPaygatePayPlug_disable_curl_ssl_vp_explain" version_id="0" version_string="1.0.0"><![CDATA[Do not modify this setting unless you've got an error when generating the PayGate config; it can happen on local installation.]]></phrase>
+    <phrase title="option_group_bdPaygatePayPlug" version_id="0" version_string="1.0.0"><![CDATA[[bd] Paygates: PAYPLUG]]></phrase>
+    <phrase title="option_group_bdPaygatePayPlug_description" version_id="0" version_string="1.0.0"><![CDATA[]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications/>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
